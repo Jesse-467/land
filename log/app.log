@@ -322,3 +322,4 @@
 {"level":"INFO","time":"2025-02-22T10:50:30.777+0800","caller":"logger/logger.go:79","msg":"/api/v1/community","status":200,"method":"GET","path":"/api/v1/community","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.43.0","errors":"","cost":0.0011109}
 {"level":"INFO","time":"2025-02-22T10:50:33.608+0800","caller":"logger/logger.go:79","msg":"/api/v1/community/1","status":200,"method":"GET","path":"/api/v1/community/1","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.43.0","errors":"","cost":0.0072994}
 {"level":"INFO","time":"2025-02-22T10:50:35.515+0800","caller":"logger/logger.go:79","msg":"/api/v1/community/2","status":200,"method":"GET","path":"/api/v1/community/2","query":"","ip":"127.0.0.1","user-agent":"PostmanRuntime/7.43.0","errors":"","cost":0.0005048}
+{"level":"INFO","time":"2025-02-22T14:11:49.713+0800","caller":"logger/logger.go:45","msg":"logger init success"}

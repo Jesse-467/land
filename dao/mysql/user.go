@@ -37,10 +37,7 @@ func InsertUser(user *models.User) error {
 func CheckUserExist(username string) bool {
 	var count int64
 	db.Model(&models.User{}).Where("username = ?", username).Count(&count)
-	if count > 0 {
-		return true
-	}
-	return false
+	return count > 0
 }
 
 // Login 用户登录

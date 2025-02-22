@@ -36,6 +36,10 @@ func SetRouter(mode string) *gin.Engine {
 		v1.POST("/post", controllers.CreatePostController)    // 创建帖子
 		v1.POST("/vote", controllers.PostVoteController)      // 帖子投票
 		v1.GET("/posts2/", controllers.GetPostListHandler2)   // 根据时间或分数获取帖子列表（优化版）
+
+		// 评论相关
+		v1.POST("/comment", controllers.CommentHandler)    // 评论
+		v1.GET("/comment", controllers.CommentListHandler) // 评论列表
 	}
 
 	r.NoRoute(func(c *gin.Context) {

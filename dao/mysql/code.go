@@ -15,4 +15,7 @@ var (
 
 	// ErrorInvalidID 表示无效ID的错误
 	ErrorInvalidID = errors.New("无效的ID")
+
+	// ErrorInsertFailed 表示插入数据失败的错误
+	ErrorInsertFailed = errors.New("插入数据失败")
 )
