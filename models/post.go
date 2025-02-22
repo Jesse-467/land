@@ -20,10 +20,10 @@ func (p *Post) TableName() string {
 
 // 帖子返回的详细信息
 type PostDetail struct {
-	AuthorName          string             `json:"author_name"`
-	VoteNum             int64              `json:"vote_num"`
-	*Post                                  // 嵌入帖子基本信息
-	*CommunityDetailRes `json:"community"` // 嵌入社区信息
+	AuthorName       string             `json:"author_name"`
+	VoteNum          int64              `json:"vote_num"`
+	*Post                               // 嵌入帖子基本信息
+	*CommunityDetail `json:"community"` // 嵌入社区信息
 }
 
 type Page struct {

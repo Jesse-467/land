@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"land/settings"
 
-	"github.com/redis/go-redis/v9"
+	"github.com/go-redis/redis/v8"
 )
 
 var (
@@ -29,6 +29,8 @@ func Init(cfg *settings.RedisConfig) (err error) {
 	if err != nil {
 		return
 	}
+
+	fmt.Println("Redis init success")
 	return
 }
 

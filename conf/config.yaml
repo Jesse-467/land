@@ -7,7 +7,7 @@ machine_id: "123456"
 
 log:
   level: "debug"
-  file: "log/app.log"
+  filename: "log/app.log"
   max_size: 100
   max_age: 30
   max_backups: 10
@@ -17,7 +17,7 @@ mysql:
   port: 3306
   user: "root"
   password: "123456"
-  db_name: "land"
+  dbname: "land"
   max_open_conns: 200
   max_idle_conns: 50
 

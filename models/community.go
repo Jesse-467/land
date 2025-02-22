@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Community struct {
-	ID            uint64    `json:"id",gorm:"primary_key"`
+	ID            uint64    `json:"id"`
 	CommunityID   uint64    `json:"community_id"`
 	CommunityName string    `json:"community_name"`
 	Introduction  string    `json:"introduction"`
@@ -18,21 +18,10 @@ type CommunityDetail struct {
 	CreateTime    time.Time `json:"create_time"`
 }
 
-type CommunityDetailRes struct {
-	CommunityID   uint64 `json:"community_id"`
-	CommunityName string `json:"community_name"`
-	Introduction  string `json:"introduction,omitempty"` // omitempty 当Introduction为空时不展示
-	CreateTime    string `json:"create_time"`
-}
-
 func (c *Community) TableName() string {
 	return "community"
 }
 
 func (c *CommunityDetail) TableName() string {
-	return "community"
-}
-
-func (c *CommunityDetailRes) TableName() string {
 	return "community"
 }

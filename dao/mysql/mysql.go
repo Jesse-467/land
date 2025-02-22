@@ -12,10 +12,10 @@ var (
 	db *gorm.DB
 )
 
-func Init(cfg *settings.MysqlConfig) error {
+func Init(cfg *settings.MysqlConfig) (err error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true&loc=Local", cfg.User, cfg.PassWord, cfg.Host, cfg.Port, cfg.DBName)
 
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		fmt.Printf("mysql connect error:%v\n", err)
 		return err
@@ -29,6 +29,8 @@ func Init(cfg *settings.MysqlConfig) error {
 
 	mysqlDB.SetMaxIdleConns(cfg.MaxIdleConns)
 	mysqlDB.SetMaxOpenConns(cfg.MaxOpenConns)
+
+	fmt.Println("mysql connect success", db == nil)
 
 	return nil
 }

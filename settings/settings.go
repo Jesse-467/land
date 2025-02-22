@@ -1,6 +1,7 @@
 package settings
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/fsnotify/fsnotify"
@@ -74,6 +75,8 @@ func Init(filePath string) error {
 			log.Printf("vip.Unmarshal() failed, err:%v\n", err)
 		}
 	})
+
+	fmt.Println("settings init success")
 
 	return nil
 }

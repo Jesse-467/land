@@ -5,6 +5,8 @@ import (
 	"land/dao/mysql"
 	"land/dao/redis"
 	"land/logger"
+	"land/pkg/snowflake"
+	"land/routers"
 	"land/settings"
 	"os"
 )
@@ -39,4 +41,17 @@ func main() {
 
 	}
 	defer redis.Close()
+
+	if err := snowflake.Init("2024-06-07", 1); err != nil {
+		fmt.Printf("init snowflake failed,err : %v\n", err)
+		return
+	}
+
+	// 启动路由
+	r := routers.SetRouter(settings.Conf.Mode)
+	err := r.Run(fmt.Sprintf(":%d", settings.Conf.Port))
+	if err != nil {
+		fmt.Printf("run server failed,err : %v\n", err)
+		return
+	}
 }
