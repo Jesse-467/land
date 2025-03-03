@@ -4,6 +4,7 @@ import (
 	"land/controllers"
 	"land/logger"
 	"land/middlewares"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,15 +15,18 @@ func SetRouter(mode string) *gin.Engine {
 	}
 
 	r := gin.New()
-	r.Use(logger.GinLogger(), logger.GinRecovery(true))
+	r.Use(logger.GinLogger(),
+		logger.GinRecovery(true),
+		middlewares.RateLimit(2*time.Second, 50))
 
-	v1 := r.Group("/api/v1")
-	// 登陆注册相关
-	v1.POST("/login", controllers.LoginHandler)     // 登录
-	v1.POST("/register", controllers.SignUpHandler) // 注册
+	auth := r.Group("/auth")
+	{
+		auth.POST("/login", controllers.LoginHandler)     // 登录
+		auth.POST("/register", controllers.SignUpHandler) // 注册
+	}
 
 	// 为后续路由启用JWT验证中间件
-
+	v1 := r.Group("/api/v1")
 	v1.Use(middlewares.JWTAuth())
 
 	{
