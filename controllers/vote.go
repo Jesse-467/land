@@ -9,6 +9,15 @@ import (
 	"go.uber.org/zap"
 )
 
+// @Summary 帖子投票
+// @Description 对帖子进行投票（赞/踩/取消），需登录
+// @Tags 投票相关
+// @Accept json
+// @Produce json
+// @Param data body models.ParamVoteData true "投票参数"
+// @Success 200 {object} controllers.RespData "投票成功"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /api/v1/vote [post]
 func PostVoteController(c *gin.Context) {
 	p := new(models.ParamVoteData)
 	if err := c.ShouldBindJSON(&p); err != nil {

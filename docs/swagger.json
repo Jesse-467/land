@@ -1,0 +1,919 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/v1/comment": {
+            "post": {
+                "description": "创建评论，需登录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "评论相关"
+                ],
+                "summary": "创建评论",
+                "parameters": [
+                    {
+                        "description": "评论内容",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Comment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建成功",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/comments": {
+            "get": {
+                "description": "批量获取评论列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "评论相关"
+                ],
+                "summary": "评论列表",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "评论ID数组",
+                        "name": "ids",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "评论列表",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/community": {
+            "get": {
+                "description": "获取所有社区列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "社区相关"
+                ],
+                "summary": "社区列表",
+                "responses": {
+                    "200": {
+                        "description": "社区列表",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/community/{id}": {
+            "get": {
+                "description": "获取指定社区的详细信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "社区相关"
+                ],
+                "summary": "社区详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "社区ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "社区详情",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/post": {
+            "put": {
+                "description": "更新帖子信息，采用延迟双删策略保证缓存一致性，需登录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子相关"
+                ],
+                "summary": "更新帖子",
+                "parameters": [
+                    {
+                        "description": "更新内容",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdatePostForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新成功",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "创建新帖子，需登录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子相关"
+                ],
+                "summary": "创建帖子",
+                "parameters": [
+                    {
+                        "description": "帖子内容",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Post"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建成功",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/post/consistency": {
+            "put": {
+                "description": "更新帖子信息，采用强一致性策略保证缓存一致性，需登录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子相关"
+                ],
+                "summary": "更新帖子（强一致性）",
+                "parameters": [
+                    {
+                        "description": "更新内容",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdatePostForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新成功",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/post/{id}": {
+            "get": {
+                "description": "获取指定帖子的详细信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子相关"
+                ],
+                "summary": "帖子详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "帖子ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "帖子详情",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/post/{id}/clear_cache": {
+            "delete": {
+                "description": "手动清除指定帖子的缓存",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子相关"
+                ],
+                "summary": "清除帖子缓存",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "帖子ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "清除结果",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/posts": {
+            "get": {
+                "description": "获取帖子列表，支持分页",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子相关"
+                ],
+                "summary": "帖子列表（基础版）",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码，默认为1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页大小，默认为50，最大100",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "帖子列表",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/posts/clear_all_cache": {
+            "delete": {
+                "description": "手动清除所有帖子的缓存",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子相关"
+                ],
+                "summary": "清除所有帖子缓存",
+                "responses": {
+                    "200": {
+                        "description": "清除结果",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/posts/init_view_zset": {
+            "post": {
+                "description": "手动初始化Redis中的帖子访问量有序集合",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子相关"
+                ],
+                "summary": "初始化访问量排序",
+                "responses": {
+                    "200": {
+                        "description": "初始化结果",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/posts/sync_view": {
+            "post": {
+                "description": "手动触发Redis访问量数据同步到MySQL",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子相关"
+                ],
+                "summary": "手动同步访问量",
+                "responses": {
+                    "200": {
+                        "description": "同步结果",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/posts/test_random_ttl": {
+            "get": {
+                "description": "测试随机TTL生成功能，验证缓存雪崩防护",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子相关"
+                ],
+                "summary": "测试随机TTL",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "基础TTL，如30m",
+                        "name": "base_ttl",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "抖动百分比",
+                        "name": "jitter_percent",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "测试次数",
+                        "name": "iterations",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "测试结果",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/posts2": {
+            "get": {
+                "description": "可按社区、时间、分数、访问量排序，支持分页、搜索、MySQL索引优化",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "帖子相关"
+                ],
+                "summary": "升级版帖子列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码，默认为1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页大小，默认为50，最大100",
+                        "name": "size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序方式：time(时间倒序), score(分数倒序), view(访问量倒序)",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "社区ID，可选",
+                        "name": "community_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "搜索关键词，可选",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否使用MySQL索引优化，默认true",
+                        "name": "use_index",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "帖子列表",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/vote": {
+            "post": {
+                "description": "对帖子进行投票（赞/踩/取消），需登录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "投票相关"
+                ],
+                "summary": "帖子投票",
+                "parameters": [
+                    {
+                        "description": "投票参数",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ParamVoteData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "投票成功",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "description": "用户登录接口，登录成功返回token，失败返回错误信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户相关"
+                ],
+                "summary": "用户登录",
+                "parameters": [
+                    {
+                        "description": "登录参数",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.LoginForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "登录成功，返回token",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "description": "用户注册接口，注册成功返回空，失败返回错误信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户相关"
+                ],
+                "summary": "用户注册",
+                "parameters": [
+                    {
+                        "description": "注册参数",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SignUpForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "注册成功",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RespData"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controllers.ResCode": {
+            "type": "integer",
+            "enum": [
+                10000,
+                10001,
+                10002,
+                10003,
+                10004,
+                10005,
+                10006,
+                10007,
+                10008,
+                10009,
+                10010
+            ],
+            "x-enum-comments": {
+                "CodeError": "错误",
+                "CodeInvalidParams": "无效参数",
+                "CodeInvalidToken": "无效的token",
+                "CodeNeedLogin": "需要登录",
+                "CodeNotFound": "未找到",
+                "CodeServerBusy": "服务器繁忙",
+                "CodeSuccess": "成功",
+                "CodeUnauthorized": "未授权",
+                "CodeUserExists": "用户已存在",
+                "CodeUserNotFound": "用户不存在",
+                "CodeUserPasswordError": "用户密码错误"
+            },
+            "x-enum-varnames": [
+                "CodeSuccess",
+                "CodeError",
+                "CodeInvalidParams",
+                "CodeNotFound",
+                "CodeUnauthorized",
+                "CodeUserNotFound",
+                "CodeUserExists",
+                "CodeUserPasswordError",
+                "CodeServerBusy",
+                "CodeNeedLogin",
+                "CodeInvalidToken"
+            ]
+        },
+        "controllers.RespData": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/controllers.ResCode"
+                },
+                "data": {},
+                "msg": {}
+            }
+        },
+        "models.Comment": {
+            "type": "object",
+            "properties": {
+                "author_id": {
+                    "type": "integer"
+                },
+                "comment_id": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "parent_id": {
+                    "type": "integer"
+                },
+                "post_id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "update_time": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.LoginForm": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ParamVoteData": {
+            "type": "object",
+            "required": [
+                "direction",
+                "post_id"
+            ],
+            "properties": {
+                "direction": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        0,
+                        -1
+                    ]
+                },
+                "post_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Post": {
+            "type": "object",
+            "properties": {
+                "author_id": {
+                    "type": "integer"
+                },
+                "community_id": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "post_id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "update_time": {
+                    "type": "string"
+                },
+                "view_count": {
+                    "description": "访问量",
+                    "type": "integer"
+                }
+            }
+        },
+        "models.SignUpForm": {
+            "type": "object",
+            "required": [
+                "password",
+                "re_password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "re_password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UpdatePostForm": {
+            "type": "object",
+            "required": [
+                "community_id",
+                "content",
+                "post_id",
+                "title"
+            ],
+            "properties": {
+                "community_id": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "post_id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

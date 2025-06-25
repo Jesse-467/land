@@ -10,7 +10,15 @@ import (
 	"go.uber.org/zap"
 )
 
-// CommentHandler 创建评论
+// @Summary 创建评论
+// @Description 创建评论，需登录
+// @Tags 评论相关
+// @Accept json
+// @Produce json
+// @Param data body models.Comment true "评论内容"
+// @Success 200 {object} controllers.RespData "创建成功"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /api/v1/comment [post]
 func CommentHandler(c *gin.Context) {
 	var comment models.Comment
 	if err := c.BindJSON(&comment); err != nil {
@@ -41,7 +49,15 @@ func CommentHandler(c *gin.Context) {
 	ResSuccess(c, nil)
 }
 
-// CommentListHandler 评论列表
+// @Summary 评论列表
+// @Description 批量获取评论列表
+// @Tags 评论相关
+// @Accept json
+// @Produce json
+// @Param ids query []string true "评论ID数组"
+// @Success 200 {object} controllers.RespData "评论列表"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /api/v1/comments [get]
 func CommentListHandler(c *gin.Context) {
 	ids, ok := c.GetQueryArray("ids")
 	if !ok {

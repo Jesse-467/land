@@ -12,6 +12,16 @@ import (
 	"go.uber.org/zap"
 )
 
+// @Summary 帖子列表（基础版）
+// @Description 获取帖子列表，支持分页
+// @Tags 帖子相关
+// @Accept json
+// @Produce json
+// @Param page query int false "页码，默认为1"
+// @Param size query int false "每页大小，默认为50，最大100"
+// @Success 200 {object} controllers.RespData "帖子列表"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /api/v1/posts [get]
 func GetPostListController(c *gin.Context) {
 	page, size := GetPageInfo(c)
 	// 获取数据
@@ -25,6 +35,15 @@ func GetPostListController(c *gin.Context) {
 	// 返回响应
 }
 
+// @Summary 帖子详情
+// @Description 获取指定帖子的详细信息
+// @Tags 帖子相关
+// @Accept json
+// @Produce json
+// @Param id path int true "帖子ID"
+// @Success 200 {object} controllers.RespData "帖子详情"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /api/v1/post/{id} [get]
 func PostDetailController(c *gin.Context) {
 	idstr := c.Param("id")
 	id, err := strconv.ParseUint(idstr, 10, 64)
@@ -50,6 +69,15 @@ func PostDetailController(c *gin.Context) {
 	ResSuccess(c, post)
 }
 
+// @Summary 创建帖子
+// @Description 创建新帖子，需登录
+// @Tags 帖子相关
+// @Accept json
+// @Produce json
+// @Param data body models.Post true "帖子内容"
+// @Success 200 {object} controllers.RespData "创建成功"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /api/v1/post [post]
 func CreatePostController(c *gin.Context) {
 	p := new(models.Post)
 	if err := c.ShouldBindJSON(&p); err != nil {
@@ -75,15 +103,20 @@ func CreatePostController(c *gin.Context) {
 	ResSuccess(c, nil)
 }
 
-// GetPostListHandler2 升级版帖子列表接口
-// @Summary 升级版帖子列表接口
-// @Description 可按社区按时间、分数或访问量排序查询帖子列表接口，支持分页（默认第1页，50条，最多100条），支持MySQL索引优化
+// @Summary 升级版帖子列表
+// @Description 可按社区、时间、分数、访问量排序，支持分页、搜索、MySQL索引优化
+// @Tags 帖子相关
+// @Accept json
+// @Produce json
 // @Param page query int false "页码，默认为1"
 // @Param size query int false "每页大小，默认为50，最大100"
 // @Param order query string false "排序方式：time(时间倒序), score(分数倒序), view(访问量倒序)"
 // @Param community_id query int false "社区ID，可选"
 // @Param search query string false "搜索关键词，可选"
 // @Param use_index query bool false "是否使用MySQL索引优化，默认true"
+// @Success 200 {object} controllers.RespData "帖子列表"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /api/v1/posts2 [get]
 func GetPostListHandler2(c *gin.Context) {
 	p := &models.ParamPostList{
 		Page:     1,
@@ -122,9 +155,14 @@ func GetPostListHandler2(c *gin.Context) {
 
 }
 
-// SyncViewCountsHandler 手动同步访问量到MySQL
 // @Summary 手动同步访问量
 // @Description 手动触发Redis访问量数据同步到MySQL
+// @Tags 帖子相关
+// @Accept json
+// @Produce json
+// @Success 200 {object} controllers.RespData "同步结果"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /api/v1/posts/sync_view [post]
 func SyncViewCountsHandler(c *gin.Context) {
 	// 这里可以添加权限检查，只有管理员才能调用，这里暂且不做权限检查
 	// userID, err := GetCurrentUserID(c)
@@ -146,9 +184,15 @@ func SyncViewCountsHandler(c *gin.Context) {
 	})
 }
 
-// ClearPostCacheHandler 清除帖子缓存
 // @Summary 清除帖子缓存
 // @Description 手动清除指定帖子的缓存
+// @Tags 帖子相关
+// @Accept json
+// @Produce json
+// @Param id path int true "帖子ID"
+// @Success 200 {object} controllers.RespData "清除结果"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /api/v1/post/{id}/clear_cache [delete]
 func ClearPostCacheHandler(c *gin.Context) {
 	// 获取帖子ID参数
 	postIDStr := c.Param("id")
@@ -184,9 +228,14 @@ func ClearPostCacheHandler(c *gin.Context) {
 	})
 }
 
-// ClearAllPostCacheHandler 清除所有帖子缓存
 // @Summary 清除所有帖子缓存
 // @Description 手动清除所有帖子的缓存
+// @Tags 帖子相关
+// @Accept json
+// @Produce json
+// @Success 200 {object} controllers.RespData "清除结果"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /api/v1/posts/clear_all_cache [delete]
 func ClearAllPostCacheHandler(c *gin.Context) {
 	// 这里可以实现清除所有缓存的逻辑
 	// 由于Redis没有直接清除所有缓存的命令，可以通过模式匹配来实现
@@ -196,9 +245,15 @@ func ClearAllPostCacheHandler(c *gin.Context) {
 	})
 }
 
-// UpdatePostController 更新帖子
 // @Summary 更新帖子
-// @Description 更新帖子信息，采用延迟双删策略保证缓存一致性
+// @Description 更新帖子信息，采用延迟双删策略保证缓存一致性，需登录
+// @Tags 帖子相关
+// @Accept json
+// @Produce json
+// @Param data body models.UpdatePostForm true "更新内容"
+// @Success 200 {object} controllers.RespData "更新成功"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /api/v1/post [put]
 func UpdatePostController(c *gin.Context) {
 	// 获取当前用户ID
 	userID, err := GetCurrentUserID(c)
@@ -233,9 +288,15 @@ func UpdatePostController(c *gin.Context) {
 	})
 }
 
-// UpdatePostWithConsistencyController 更新帖子（强一致性版本）
 // @Summary 更新帖子（强一致性）
-// @Description 更新帖子信息，采用强一致性策略保证缓存一致性
+// @Description 更新帖子信息，采用强一致性策略保证缓存一致性，需登录
+// @Tags 帖子相关
+// @Accept json
+// @Produce json
+// @Param data body models.UpdatePostForm true "更新内容"
+// @Success 200 {object} controllers.RespData "更新成功"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /api/v1/post/consistency [put]
 func UpdatePostWithConsistencyController(c *gin.Context) {
 	// 获取当前用户ID
 	userID, err := GetCurrentUserID(c)
@@ -270,9 +331,14 @@ func UpdatePostWithConsistencyController(c *gin.Context) {
 	})
 }
 
-// InitPostViewZSetHandler 初始化帖子访问量有序集合
 // @Summary 初始化访问量排序
-// @Description 手动初始化Redis中的帖子访问量有序集合，用于按访问量排序功能
+// @Description 手动初始化Redis中的帖子访问量有序集合
+// @Tags 帖子相关
+// @Accept json
+// @Produce json
+// @Success 200 {object} controllers.RespData "初始化结果"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /api/v1/posts/init_view_zset [post]
 func InitPostViewZSetHandler(c *gin.Context) {
 	// 这里可以添加权限检查，只有管理员才能调用
 	// userID, err := GetCurrentUserID(c)
@@ -303,9 +369,17 @@ func InitPostViewZSetHandler(c *gin.Context) {
 	})
 }
 
-// TestRandomTTLHandler 测试随机TTL生成功能
 // @Summary 测试随机TTL
 // @Description 测试随机TTL生成功能，验证缓存雪崩防护
+// @Tags 帖子相关
+// @Accept json
+// @Produce json
+// @Param base_ttl query string false "基础TTL，如30m"
+// @Param jitter_percent query int false "抖动百分比"
+// @Param iterations query int false "测试次数"
+// @Success 200 {object} controllers.RespData "测试结果"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /api/v1/posts/test_random_ttl [get]
 func TestRandomTTLHandler(c *gin.Context) {
 	// 获取测试参数
 	baseTTLStr := c.Query("base_ttl")

@@ -13,6 +13,15 @@ import (
 	"go.uber.org/zap"
 )
 
+// @Summary 用户注册
+// @Description 用户注册接口，注册成功返回空，失败返回错误信息
+// @Tags 用户相关
+// @Accept json
+// @Produce json
+// @Param data body models.SignUpForm true "注册参数"
+// @Success 200 {object} controllers.RespData "注册成功"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /auth/register [post]
 func SignUpHandler(c *gin.Context) {
 	p := new(models.SignUpForm)
 
@@ -53,6 +62,15 @@ func SignUpHandler(c *gin.Context) {
 	ResSuccess(c, nil)
 }
 
+// @Summary 用户登录
+// @Description 用户登录接口，登录成功返回token，失败返回错误信息
+// @Tags 用户相关
+// @Accept json
+// @Produce json
+// @Param data body models.LoginForm true "登录参数"
+// @Success 200 {object} controllers.RespData "登录成功，返回token"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /auth/login [post]
 func LoginHandler(c *gin.Context) {
 	// 获取请求参数，校验参数
 	p := new(models.LoginForm)

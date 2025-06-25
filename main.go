@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"land/dao/mysql"
 	"land/dao/redis"
+	_ "land/docs" // swag init生成的docs包
 	"land/logger"
 	"land/logic"
 	"land/pkg/snowflake"
@@ -11,6 +12,9 @@ import (
 	"land/settings"
 	"os"
 	"time"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -55,6 +59,10 @@ func main() {
 
 	// 启动路由
 	r := routers.SetRouter(settings.Conf.Mode)
+
+	// 注册Swagger路由
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	err := r.Run(fmt.Sprintf(":%d", settings.Conf.Port))
 	if err != nil {
 		fmt.Printf("run server failed,err : %v\n", err)

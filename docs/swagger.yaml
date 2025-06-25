@@ -1,0 +1,614 @@
+definitions:
+  controllers.ResCode:
+    enum:
+    - 10000
+    - 10001
+    - 10002
+    - 10003
+    - 10004
+    - 10005
+    - 10006
+    - 10007
+    - 10008
+    - 10009
+    - 10010
+    type: integer
+    x-enum-comments:
+      CodeError: 错误
+      CodeInvalidParams: 无效参数
+      CodeInvalidToken: 无效的token
+      CodeNeedLogin: 需要登录
+      CodeNotFound: 未找到
+      CodeServerBusy: 服务器繁忙
+      CodeSuccess: 成功
+      CodeUnauthorized: 未授权
+      CodeUserExists: 用户已存在
+      CodeUserNotFound: 用户不存在
+      CodeUserPasswordError: 用户密码错误
+    x-enum-varnames:
+    - CodeSuccess
+    - CodeError
+    - CodeInvalidParams
+    - CodeNotFound
+    - CodeUnauthorized
+    - CodeUserNotFound
+    - CodeUserExists
+    - CodeUserPasswordError
+    - CodeServerBusy
+    - CodeNeedLogin
+    - CodeInvalidToken
+  controllers.RespData:
+    properties:
+      code:
+        $ref: '#/definitions/controllers.ResCode'
+      data: {}
+      msg: {}
+    type: object
+  models.Comment:
+    properties:
+      author_id:
+        type: integer
+      comment_id:
+        type: integer
+      content:
+        type: string
+      create_time:
+        type: string
+      id:
+        type: integer
+      parent_id:
+        type: integer
+      post_id:
+        type: integer
+      status:
+        type: integer
+      update_time:
+        type: string
+    type: object
+  models.LoginForm:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  models.ParamVoteData:
+    properties:
+      direction:
+        enum:
+        - 1
+        - 0
+        - -1
+        type: integer
+      post_id:
+        type: string
+    required:
+    - direction
+    - post_id
+    type: object
+  models.Post:
+    properties:
+      author_id:
+        type: integer
+      community_id:
+        type: integer
+      content:
+        type: string
+      create_time:
+        type: string
+      id:
+        type: integer
+      post_id:
+        type: integer
+      status:
+        type: integer
+      title:
+        type: string
+      update_time:
+        type: string
+      view_count:
+        description: 访问量
+        type: integer
+    type: object
+  models.SignUpForm:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      re_password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - re_password
+    - username
+    type: object
+  models.UpdatePostForm:
+    properties:
+      community_id:
+        type: integer
+      content:
+        type: string
+      post_id:
+        type: integer
+      title:
+        type: string
+    required:
+    - community_id
+    - content
+    - post_id
+    - title
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/comment:
+    post:
+      consumes:
+      - application/json
+      description: 创建评论，需登录
+      parameters:
+      - description: 评论内容
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.Comment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建成功
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 创建评论
+      tags:
+      - 评论相关
+  /api/v1/comments:
+    get:
+      consumes:
+      - application/json
+      description: 批量获取评论列表
+      parameters:
+      - collectionFormat: csv
+        description: 评论ID数组
+        in: query
+        items:
+          type: string
+        name: ids
+        required: true
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 评论列表
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 评论列表
+      tags:
+      - 评论相关
+  /api/v1/community:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有社区列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 社区列表
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 社区列表
+      tags:
+      - 社区相关
+  /api/v1/community/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 获取指定社区的详细信息
+      parameters:
+      - description: 社区ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 社区详情
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 社区详情
+      tags:
+      - 社区相关
+  /api/v1/post:
+    post:
+      consumes:
+      - application/json
+      description: 创建新帖子，需登录
+      parameters:
+      - description: 帖子内容
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.Post'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建成功
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 创建帖子
+      tags:
+      - 帖子相关
+    put:
+      consumes:
+      - application/json
+      description: 更新帖子信息，采用延迟双删策略保证缓存一致性，需登录
+      parameters:
+      - description: 更新内容
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdatePostForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 更新帖子
+      tags:
+      - 帖子相关
+  /api/v1/post/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 获取指定帖子的详细信息
+      parameters:
+      - description: 帖子ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 帖子详情
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 帖子详情
+      tags:
+      - 帖子相关
+  /api/v1/post/{id}/clear_cache:
+    delete:
+      consumes:
+      - application/json
+      description: 手动清除指定帖子的缓存
+      parameters:
+      - description: 帖子ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 清除结果
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 清除帖子缓存
+      tags:
+      - 帖子相关
+  /api/v1/post/consistency:
+    put:
+      consumes:
+      - application/json
+      description: 更新帖子信息，采用强一致性策略保证缓存一致性，需登录
+      parameters:
+      - description: 更新内容
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdatePostForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 更新帖子（强一致性）
+      tags:
+      - 帖子相关
+  /api/v1/posts:
+    get:
+      consumes:
+      - application/json
+      description: 获取帖子列表，支持分页
+      parameters:
+      - description: 页码，默认为1
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小，默认为50，最大100
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 帖子列表
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 帖子列表（基础版）
+      tags:
+      - 帖子相关
+  /api/v1/posts/clear_all_cache:
+    delete:
+      consumes:
+      - application/json
+      description: 手动清除所有帖子的缓存
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 清除结果
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 清除所有帖子缓存
+      tags:
+      - 帖子相关
+  /api/v1/posts/init_view_zset:
+    post:
+      consumes:
+      - application/json
+      description: 手动初始化Redis中的帖子访问量有序集合
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 初始化结果
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 初始化访问量排序
+      tags:
+      - 帖子相关
+  /api/v1/posts/sync_view:
+    post:
+      consumes:
+      - application/json
+      description: 手动触发Redis访问量数据同步到MySQL
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 同步结果
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 手动同步访问量
+      tags:
+      - 帖子相关
+  /api/v1/posts/test_random_ttl:
+    get:
+      consumes:
+      - application/json
+      description: 测试随机TTL生成功能，验证缓存雪崩防护
+      parameters:
+      - description: 基础TTL，如30m
+        in: query
+        name: base_ttl
+        type: string
+      - description: 抖动百分比
+        in: query
+        name: jitter_percent
+        type: integer
+      - description: 测试次数
+        in: query
+        name: iterations
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 测试结果
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 测试随机TTL
+      tags:
+      - 帖子相关
+  /api/v1/posts2:
+    get:
+      consumes:
+      - application/json
+      description: 可按社区、时间、分数、访问量排序，支持分页、搜索、MySQL索引优化
+      parameters:
+      - description: 页码，默认为1
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小，默认为50，最大100
+        in: query
+        name: size
+        type: integer
+      - description: 排序方式：time(时间倒序), score(分数倒序), view(访问量倒序)
+        in: query
+        name: order
+        type: string
+      - description: 社区ID，可选
+        in: query
+        name: community_id
+        type: integer
+      - description: 搜索关键词，可选
+        in: query
+        name: search
+        type: string
+      - description: 是否使用MySQL索引优化，默认true
+        in: query
+        name: use_index
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 帖子列表
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 升级版帖子列表
+      tags:
+      - 帖子相关
+  /api/v1/vote:
+    post:
+      consumes:
+      - application/json
+      description: 对帖子进行投票（赞/踩/取消），需登录
+      parameters:
+      - description: 投票参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.ParamVoteData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 投票成功
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 帖子投票
+      tags:
+      - 投票相关
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录接口，登录成功返回token，失败返回错误信息
+      parameters:
+      - description: 登录参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 登录成功，返回token
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 用户登录
+      tags:
+      - 用户相关
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: 用户注册接口，注册成功返回空，失败返回错误信息
+      parameters:
+      - description: 注册参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.SignUpForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 注册成功
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 用户注册
+      tags:
+      - 用户相关
+swagger: "2.0"
