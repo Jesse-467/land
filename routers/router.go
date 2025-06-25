@@ -23,6 +23,7 @@ func SetRouter(mode string) *gin.Engine {
 	{
 		auth.POST("/login", controllers.LoginHandler)     // 登录
 		auth.POST("/register", controllers.SignUpHandler) // 注册
+		auth.POST("/logout", middlewares.JWTAuth(), controllers.LogoutHandler)
 	}
 
 	// 为后续路由启用JWT验证中间件

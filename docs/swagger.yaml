@@ -585,6 +585,31 @@ paths:
       summary: 用户登录
       tags:
       - 用户相关
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: 用户登出接口，清除Redis中的JWT
+      parameters:
+      - description: Bearer 用户token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 登出成功
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/controllers.RespData'
+      summary: 用户登出
+      tags:
+      - 用户相关
   /auth/register:
     post:
       consumes:

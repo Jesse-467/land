@@ -4,11 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"land/dao/mysql"
+	"land/dao/redis"
 	"land/logic"
 	"land/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+
+	"time"
 
 	"go.uber.org/zap"
 )
@@ -97,10 +100,51 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 
-	// 3. 返回响应
+	// 幂等：先查Redis是否有token且有效，有则直接返回
+	redisToken, err := redis.GetJWTToken(int64(user.UserID))
+	if err == nil && redisToken != "" {
+		ResSuccess(c, gin.H{
+			"user_id":   fmt.Sprintf("%d", user.UserID),
+			"user_name": user.Username,
+			"token":     redisToken,
+		})
+		return
+	}
+
+	// Redis无token或token失效，生成新token并存入
+	err = redis.SetJWTToken(int64(user.UserID), user.Token, 24*time.Hour)
+	if err != nil {
+		zap.L().Error("SetJWTToken to redis failed", zap.Error(err))
+		ResError(c, CodeServerBusy)
+		return
+	}
+
 	ResSuccess(c, gin.H{
-		"user_id":   fmt.Sprintf("%d", user.UserID), // ID大于2^53时，JSON序列化可能失真，2^64 > 2^53
+		"user_id":   fmt.Sprintf("%d", user.UserID),
 		"user_name": user.Username,
 		"token":     user.Token,
 	})
+}
+
+// @Summary 用户登出
+// @Description 用户登出接口，清除Redis中的JWT
+// @Tags 用户相关
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer 用户token"
+// @Success 200 {object} controllers.RespData "登出成功"
+// @Failure 400 {object} controllers.RespData "请求参数错误"
+// @Router /auth/logout [post]
+func LogoutHandler(c *gin.Context) {
+	userID, err := GetCurrentUserID(c)
+	if err != nil {
+		ResError(c, CodeNeedLogin)
+		return
+	}
+	err = redis.DelJWTToken(int64(userID))
+	if err != nil {
+		ResError(c, CodeServerBusy)
+		return
+	}
+	ResSuccess(c, gin.H{"message": "登出成功"})
 }

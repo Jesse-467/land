@@ -56,6 +56,9 @@ const (
 	// 类型：zset
 	// 用途：存储帖子ID及其访问量
 	KeyPostViewZSet = "post:view"
+
+	// JWT Token存储前缀
+	KeyJWTTokenPF = "jwt:token:"
 )
 
 // getRedisKey 获取完整的Redis键

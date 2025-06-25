@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"land/controllers"
+	"land/dao/redis"
 	"land/pkg/jwt"
 	"strings"
 
@@ -34,6 +35,14 @@ func JWTAuth() func(c *gin.Context) {
 
 		if err != nil {
 			// 如果token解析失败，则返回无效的token错误
+			controllers.ResError(c, controllers.CodeInvalidToken)
+			c.Abort()
+			return
+		}
+
+		// 新增：从Redis校验token是否有效存在
+		redisToken, err := redis.GetJWTToken(mc.UserID)
+		if err != nil || redisToken != parts[1] {
 			controllers.ResError(c, controllers.CodeInvalidToken)
 			c.Abort()
 			return

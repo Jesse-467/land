@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"land/settings"
+	"time"
 
 	"github.com/go-redis/redis/v8"
 )
@@ -39,4 +40,25 @@ func Close() {
 		return
 	}
 	_ = client.Close()
+}
+
+// SetJWTToken 将JWT存入Redis，过期时间为24小时
+func SetJWTToken(userID int64, token string, expire time.Duration) error {
+	ctx := context.Background()
+	key := getRedisKey(KeyJWTTokenPF + fmt.Sprintf("%d", userID))
+	return client.Set(ctx, key, token, expire).Err()
+}
+
+// GetJWTToken 获取Redis中存储的JWT
+func GetJWTToken(userID int64) (string, error) {
+	ctx := context.Background()
+	key := getRedisKey(KeyJWTTokenPF + fmt.Sprintf("%d", userID))
+	return client.Get(ctx, key).Result()
+}
+
+// DelJWTToken 删除Redis中的JWT
+func DelJWTToken(userID int64) error {
+	ctx := context.Background()
+	key := getRedisKey(KeyJWTTokenPF + fmt.Sprintf("%d", userID))
+	return client.Del(ctx, key).Err()
 }
