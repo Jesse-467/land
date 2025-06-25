@@ -42,7 +42,7 @@ func GetCurrentUserID(c *gin.Context) (userID uint64, err error) {
 //
 // 返回值:
 //   - page: 页码，默认为1
-//   - size: 每页大小，默认为10
+//   - size: 每页大小，默认为50，最大为100
 func GetPageInfo(c *gin.Context) (int64, int64) {
 	PageStr := c.Query("page")
 	SizeStr := c.Query("size")
@@ -52,12 +52,15 @@ func GetPageInfo(c *gin.Context) (int64, int64) {
 		err  error
 	)
 	page, err = strconv.ParseInt(PageStr, 10, 64)
-	if err != nil {
-		page = 1 // 如果解析失败，默认为第1页
+	if err != nil || page < 1 {
+		page = 1 // 如果解析失败或小于1，默认为第1页
 	}
 	size, err = strconv.ParseInt(SizeStr, 10, 64)
-	if err != nil {
-		size = 10 // 如果解析失败，默认每页10条
+	if err != nil || size < 1 {
+		size = 50 // 如果解析失败或小于1，默认每页50条
+	}
+	if size > 100 {
+		size = 100 // 限制每页最多100条
 	}
 	return page, size
 }

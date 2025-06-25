@@ -30,7 +30,7 @@ func Init(cfg *settings.MysqlConfig) (err error) {
 	mysqlDB.SetMaxIdleConns(cfg.MaxIdleConns)
 	mysqlDB.SetMaxOpenConns(cfg.MaxOpenConns)
 
-	fmt.Println("mysql connect success", db == nil)
+	fmt.Println("mysql connect success: ", db == nil)
 
 	return nil
 }

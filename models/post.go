@@ -10,6 +10,7 @@ type Post struct {
 	Title       string    `json:"title"`
 	Content     string    `json:"content"`
 	Status      uint8     `json:"status"`
+	ViewCount   int64     `json:"view_count"` // 访问量
 	CreateTime  time.Time `json:"create_time"`
 	UpdateTime  time.Time `json:"update_time"`
 }

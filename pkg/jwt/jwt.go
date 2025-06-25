@@ -2,6 +2,7 @@ package jwt
 
 import (
 	"errors"
+	"land/settings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -12,7 +13,7 @@ import (
 const TokenExpiredDuration = time.Hour * 24 * 30
 
 // mySecret 是用于签名的密钥
-var mySecret = []byte("0d000721")
+// var mySecret = []byte("0d000721")
 
 // MyClaims 自定义声明结构体并内嵌jwt.StandardClaims
 // jwt包自带的jwt.StandardClaims只包含了官方字段
@@ -46,7 +47,7 @@ func GenToken(userID int64, username string) (string, error) {
 	// 使用指定的签名方法创建签名对象
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
 	// 使用指定的secret签名并获得完整的编码后的字符串token
-	return token.SignedString(mySecret)
+	return token.SignedString([]byte(settings.Conf.Secret))
 }
 
 // ParseToken 解析JWT
@@ -60,7 +61,7 @@ func ParseToken(tokenString string) (*MyClaims, error) {
 	// 解析token
 	var mc = new(MyClaims)
 	token, err := jwt.ParseWithClaims(tokenString, mc, func(token *jwt.Token) (i interface{}, err error) {
-		return mySecret, nil
+		return []byte(settings.Conf.Secret), nil
 	})
 	if err != nil {
 		return nil, err

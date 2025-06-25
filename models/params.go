@@ -3,6 +3,7 @@ package models
 const (
 	OrderTime  = "time"
 	OrderScore = "score"
+	OrderView  = "view" // 按访问量排序
 )
 
 // type RegisterForm struct {
@@ -34,8 +35,17 @@ type ParamVoteData struct {
 // 获取帖子列表参数
 type ParamPostList struct {
 	CommunityID uint64 `json:"community_id" form:"community_id"`
-	Page        int64  `json:"page" form:"page"`
-	Size        int64  `json:"size" form:"size"`
-	Order       string `json:"order" form:"order" example:"score"`
+	Page        int64  `json:"page" form:"page" binding:"min=1"`                   // 页码，最小为1
+	Size        int64  `json:"size" form:"size" binding:"min=1,max=100"`           // 每页大小，1-100
+	Order       string `json:"order" form:"order" binding:"oneof=time score view"` // 排序方式：time(时间), score(分数), view(访问量)
 	Search      string `json:"search" form:"search"`
+	UseIndex    bool   `json:"use_index" form:"use_index"` // 是否使用MySQL索引优化（默认true）
+}
+
+// 更新帖子参数
+type UpdatePostForm struct {
+	PostID      uint64 `json:"post_id" binding:"required"`
+	Title       string `json:"title" binding:"required"`
+	Content     string `json:"content" binding:"required"`
+	CommunityID uint64 `json:"community_id" binding:"required"`
 }

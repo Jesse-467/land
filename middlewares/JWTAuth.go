@@ -29,8 +29,8 @@ func JWTAuth() func(c *gin.Context) {
 		// 按空格分割Authorization字段的值
 		parts := strings.SplitN(authHeader, " ", 2)
 
-		// parts[0]是获取到的tokenString，使用之前定义好的ParseToken函数来解析它
-		mc, err := jwt.ParseToken(parts[0])
+		// parts[1]是获取到的tokenString，使用之前定义好的ParseToken函数来解析它
+		mc, err := jwt.ParseToken(parts[1])
 
 		if err != nil {
 			// 如果token解析失败，则返回无效的token错误

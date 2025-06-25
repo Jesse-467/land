@@ -23,6 +23,12 @@ type AppConfig struct {
 	*LogConfig   `mapstructure:"log"`   // 日志配置
 	*MysqlConfig `mapstructure:"mysql"` // mysql配置
 	*RedisConfig `mapstructure:"redis"` // redis配置
+	*AuthConfig  `mapstructure:"auth"`  // 认证配置
+}
+
+type AuthConfig struct {
+	Secret string `mapstructure:"secret"`     // 密钥
+	Expire int    `mapstructure:"jwt_expire"` // 过期时间
 }
 
 type LogConfig struct {

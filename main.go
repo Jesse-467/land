@@ -5,10 +5,12 @@ import (
 	"land/dao/mysql"
 	"land/dao/redis"
 	"land/logger"
+	"land/logic"
 	"land/pkg/snowflake"
 	"land/routers"
 	"land/settings"
 	"os"
+	"time"
 )
 
 func main() {
@@ -38,7 +40,6 @@ func main() {
 	if err := redis.Init(settings.Conf.RedisConfig); err != nil {
 		fmt.Printf("init redis failed,err : %v\n", err)
 		return
-
 	}
 	defer redis.Close()
 
@@ -46,6 +47,11 @@ func main() {
 		fmt.Printf("init snowflake failed,err : %v\n", err)
 		return
 	}
+
+	// 启动访问量同步服务
+	syncService := logic.NewViewCountSyncService(5 * time.Minute) // 每5分钟同步一次
+	syncService.Start()
+	defer syncService.Stop()
 
 	// 启动路由
 	r := routers.SetRouter(settings.Conf.Mode)
