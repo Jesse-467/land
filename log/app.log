@@ -325,3 +325,18 @@
 {"level":"INFO","time":"2025-02-22T14:11:49.713+0800","caller":"logger/logger.go:45","msg":"logger init success"}
 {"level":"INFO","time":"2025-03-03T12:12:26.094+0800","caller":"logger/logger.go:45","msg":"logger init success"}
 {"level":"INFO","time":"2025-03-03T12:12:48.319+0800","caller":"logger/logger.go:45","msg":"logger init success"}
+{"level":"INFO","time":"2025-06-25T13:38:58.232+0800","caller":"logger/logger.go:45","msg":"logger init success"}
+{"level":"INFO","time":"2025-06-25T13:39:29.426+0800","caller":"logger/logger.go:45","msg":"logger init success"}
+{"level":"INFO","time":"2025-06-25T13:39:29.436+0800","caller":"logic/sync.go:32","msg":"ViewCountSyncService started","sync_interval":300}
+{"level":"DEBUG","time":"2025-06-25T13:44:29.436+0800","caller":"logic/sync.go:59","msg":"Starting view count sync..."}
+{"level":"DEBUG","time":"2025-06-25T13:44:29.436+0800","caller":"logic/sync.go:69","msg":"No view counts to sync"}
+{"level":"DEBUG","time":"2025-06-25T13:49:29.436+0800","caller":"logic/sync.go:59","msg":"Starting view count sync..."}
+{"level":"DEBUG","time":"2025-06-25T13:49:29.437+0800","caller":"logic/sync.go:69","msg":"No view counts to sync"}
+{"level":"DEBUG","time":"2025-06-25T13:54:29.436+0800","caller":"logic/sync.go:59","msg":"Starting view count sync..."}
+{"level":"DEBUG","time":"2025-06-25T13:54:29.437+0800","caller":"logic/sync.go:69","msg":"No view counts to sync"}
+{"level":"DEBUG","time":"2025-06-25T13:59:29.436+0800","caller":"logic/sync.go:59","msg":"Starting view count sync..."}
+{"level":"DEBUG","time":"2025-06-25T13:59:29.436+0800","caller":"logic/sync.go:69","msg":"No view counts to sync"}
+{"level":"DEBUG","time":"2025-06-25T14:04:25.746+0800","caller":"logic/sync.go:59","msg":"Starting view count sync..."}
+{"level":"DEBUG","time":"2025-06-25T14:04:25.747+0800","caller":"logic/sync.go:69","msg":"No view counts to sync"}
+{"level":"DEBUG","time":"2025-06-25T14:09:25.746+0800","caller":"logic/sync.go:59","msg":"Starting view count sync..."}
+{"level":"DEBUG","time":"2025-06-25T14:09:25.747+0800","caller":"logic/sync.go:69","msg":"No view counts to sync"}
